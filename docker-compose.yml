@@ -1,0 +1,39 @@
+version: '3.9'
+
+services:
+  api:
+    image: docker.io/library/node:18.12.0-alpine3.16
+    container_name: api
+    ports:
+      - 3333:3333
+    environment:
+      NODE_ENV: local
+    command: npx nx serve api
+    user: node
+    volumes:
+      - ./:/home/node/graphile-worker-integration
+    working_dir: /home/node/graphile-worker-integration
+
+  worker:
+    image: docker.io/library/node:18.12.0-alpine3.16
+    container_name: worker
+    ports:
+      - 3334:3334
+    environment:
+      NODE_ENV: local
+      PORT: 3334
+    command: npx nx serve worker
+    user: node
+    volumes:
+      - ./:/home/node/graphile-worker-integration
+    working_dir: /home/node/graphile-worker-integration
+
+  database:
+    image: docker.io/library/postgres:14.5-alpine3.16
+    container_name: database
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_USER: postgres
