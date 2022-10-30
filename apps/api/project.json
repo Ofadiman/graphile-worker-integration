@@ -4,6 +4,12 @@
   "sourceRoot": "apps/api/src",
   "projectType": "application",
   "targets": {
+    "cli": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node dist/apps/api/console.js"
+      }
+    },
     "build": {
       "executor": "@nrwl/webpack:webpack",
       "outputs": ["{options.outputPath}"],
@@ -12,7 +18,13 @@
         "compiler": "tsc",
         "outputPath": "dist/apps/api",
         "main": "apps/api/src/main.ts",
-        "tsConfig": "apps/api/tsconfig.app.json"
+        "tsConfig": "apps/api/tsconfig.app.json",
+        "additionalEntryPoints": [
+          {
+            "entryName": "console",
+            "entryPath": "apps/api/src/console.ts"
+          }
+        ]
       },
       "configurations": {
         "production": {
