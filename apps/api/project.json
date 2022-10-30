@@ -7,7 +7,7 @@
     "cli": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "node dist/apps/api/console.js"
+        "command": "docker compose exec api node dist/apps/api/cli.js"
       }
     },
     "build": {
@@ -21,8 +21,8 @@
         "tsConfig": "apps/api/tsconfig.app.json",
         "additionalEntryPoints": [
           {
-            "entryName": "console",
-            "entryPath": "apps/api/src/console.ts"
+            "entryName": "cli",
+            "entryPath": "apps/api/src/cli.ts"
           }
         ]
       },

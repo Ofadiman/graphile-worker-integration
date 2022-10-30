@@ -1,9 +1,10 @@
 import { Command, Console } from 'nestjs-console'
-import knex, { Knex } from 'knex'
+import { Knex } from 'knex'
 import * as migrations from '../database/migrations'
 import * as fs from 'fs'
 import { drop, dropLast, head, map, pipe, split } from 'ramda'
 import { camelCase } from 'change-case'
+import { InjectKnex } from '@graphile-worker-integration/knex'
 
 class MigrationSource implements Knex.MigrationSource<unknown> {
   async getMigration(migration: string): Promise<Knex.Migration> {
@@ -21,28 +22,21 @@ class MigrationSource implements Knex.MigrationSource<unknown> {
 
 @Console()
 export class DatabaseCli {
-  private readonly connection = knex({
-    client: 'pg',
-    connection: {
-      database: 'postgres',
-      user: 'postgres',
-      password: 'password',
-    },
-  })
-
   private readonly MIGRATIONS_DIRECTORY = `${process.cwd()}/apps/api/src/database/migrations`
+
+  constructor(@InjectKnex() readonly knex: Knex) {}
 
   @Command({
     command: 'migrate:latest',
   })
   async migrateLatest(): Promise<void> {
     console.log(`Running migrations.`)
-    await this.connection.migrate.latest({
+    await this.knex.migrate.latest({
       migrationSource: new MigrationSource(),
     })
 
     console.log(`Destroying connection.`)
-    await this.connection.destroy()
+    await this.knex.destroy()
     console.log(`Connection destroyed.`)
   }
 
@@ -51,12 +45,12 @@ export class DatabaseCli {
   })
   async migrateRollback(): Promise<void> {
     console.log(`Rolling back migrations.`)
-    await this.connection.migrate.rollback({
+    await this.knex.migrate.rollback({
       migrationSource: new MigrationSource(),
     })
 
     console.log(`Destroying connection.`)
-    await this.connection.destroy()
+    await this.knex.destroy()
     console.log(`Connection destroyed.`)
   }
 
@@ -65,11 +59,11 @@ export class DatabaseCli {
   })
   async migrateMake(name: string): Promise<void> {
     console.log(`Creating migration file.`)
-    await this.connection.migrate.make(name, {
+    await this.knex.migrate.make(name, {
       migrationSource: new MigrationSource(),
       directory: this.MIGRATIONS_DIRECTORY,
       extension: 'ts',
-      stub: `${process.cwd()}/apps/api/src/database/migrations/stub.txt`
+      stub: `${process.cwd()}/apps/api/src/database/migrations/stub.txt`,
     })
 
     console.log(`Regenerating index.ts file.`)
@@ -101,7 +95,7 @@ export class DatabaseCli {
     )
 
     console.log(`Destroying connection.`)
-    await this.connection.destroy()
+    await this.knex.destroy()
     console.log(`Connection destroyed.`)
   }
 }
