@@ -8,6 +8,7 @@ services:
       - 3333:3333
     environment:
       NODE_ENV: local
+      PORT: 3333
     command: npx nx serve api
     user: node
     volumes:

@@ -1,11 +1,11 @@
 import { Logger } from '@nestjs/common'
 import { NestFactory } from '@nestjs/core'
-import { AppModule } from './app.module'
+import { MainModule } from './main.module'
 
 const PORT = process.env.PORT || 3334
 
 async function bootstrap() {
-  const nestApplication = await NestFactory.create(AppModule)
+  const nestApplication = await NestFactory.create(MainModule)
   await nestApplication.listen(PORT)
 }
 

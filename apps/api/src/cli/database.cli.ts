@@ -5,6 +5,8 @@ import * as fs from 'fs'
 import { drop, dropLast, head, map, pipe, split } from 'ramda'
 import { camelCase } from 'change-case'
 import { InjectKnex } from '@graphile-worker-integration/knex'
+import { WorkerUtils } from 'graphile-worker'
+import { InjectWorkerUtils } from '@graphile-worker-integration/graphile-worker'
 
 class MigrationSource implements Knex.MigrationSource<unknown> {
   async getMigration(migration: string): Promise<Knex.Migration> {
@@ -24,7 +26,10 @@ class MigrationSource implements Knex.MigrationSource<unknown> {
 export class DatabaseCli {
   private readonly MIGRATIONS_DIRECTORY = `${process.cwd()}/apps/api/src/database/migrations`
 
-  constructor(@InjectKnex() readonly knex: Knex) {}
+  constructor(
+    @InjectKnex() readonly knex: Knex,
+    @InjectWorkerUtils() readonly workerUtils: WorkerUtils,
+  ) {}
 
   @Command({
     command: 'migrate:latest',
@@ -34,6 +39,9 @@ export class DatabaseCli {
     await this.knex.migrate.latest({
       migrationSource: new MigrationSource(),
     })
+
+    await this.workerUtils.migrate()
+    await this.workerUtils.release()
 
     console.log(`Destroying connection.`)
     await this.knex.destroy()

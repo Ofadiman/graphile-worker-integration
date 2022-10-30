@@ -15,6 +15,7 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
+      "@graphile-worker-integration/graphile-worker": ["libs/graphile-worker/src/index.ts"],
       "@graphile-worker-integration/knex": ["libs/knex/src/index.ts"],
       "@graphile-worker-integration/shared": ["libs/shared/src/index.ts"]
     }
