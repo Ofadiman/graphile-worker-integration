@@ -42,10 +42,6 @@ export class DatabaseCli {
 
     await this.workerUtils.migrate()
     await this.workerUtils.release()
-
-    console.log(`Destroying connection.`)
-    await this.knex.destroy()
-    console.log(`Connection destroyed.`)
   }
 
   @Command({
@@ -56,10 +52,6 @@ export class DatabaseCli {
     await this.knex.migrate.rollback({
       migrationSource: new MigrationSource(),
     })
-
-    console.log(`Destroying connection.`)
-    await this.knex.destroy()
-    console.log(`Connection destroyed.`)
   }
 
   @Command({
@@ -101,9 +93,5 @@ export class DatabaseCli {
       `${this.MIGRATIONS_DIRECTORY}/index.ts`,
       `${appendNewLine(joinByNewLine(exports))}`,
     )
-
-    console.log(`Destroying connection.`)
-    await this.knex.destroy()
-    console.log(`Connection destroyed.`)
   }
 }

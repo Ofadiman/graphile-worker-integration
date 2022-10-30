@@ -1,4 +1,11 @@
-import { ConfigurableModuleBuilder, Global, Inject, Module } from '@nestjs/common'
+import {
+  ConfigurableModuleBuilder,
+  Global,
+  Inject,
+  Module,
+  OnModuleDestroy,
+  OnModuleInit,
+} from '@nestjs/common'
 import knex, { Knex } from 'knex'
 
 const ConfigurableKnexModule = new ConfigurableModuleBuilder<Knex.Config>().build()
@@ -19,4 +26,19 @@ export const InjectKnex = () => Inject(KNEX_TOKEN)
   exports: [KNEX_TOKEN],
 })
 @Global()
-export class KnexModule extends ConfigurableKnexModule.ConfigurableModuleClass {}
+export class KnexModule
+  extends ConfigurableKnexModule.ConfigurableModuleClass
+  implements OnModuleInit, OnModuleDestroy
+{
+  constructor(@InjectKnex() private readonly knex: Knex) {
+    super()
+  }
+
+  async onModuleInit(): Promise<void> {
+    await this.knex.initialize()
+  }
+
+  async onModuleDestroy(): Promise<void> {
+    await this.knex.destroy()
+  }
+}
