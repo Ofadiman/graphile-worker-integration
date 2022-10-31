@@ -1,8 +1,9 @@
-import { Module } from '@nestjs/common'
+import { Module, ValidationPipe } from '@nestjs/common'
 
 import { HealthController } from './health/health.controller'
 import { SchedulerModule } from '@graphile-worker-integration/graphile-worker'
 import { RestController } from './rest/rest.controller'
+import { APP_PIPE } from '@nestjs/core'
 
 @Module({
   imports: [
@@ -11,5 +12,15 @@ import { RestController } from './rest/rest.controller'
     }),
   ],
   controllers: [HealthController, RestController],
+  providers: [
+    {
+      provide: APP_PIPE,
+      useValue: new ValidationPipe({
+        whitelist: true,
+        forbidUnknownValues: true,
+        forbidNonWhitelisted: true,
+      }),
+    },
+  ],
 })
 export class MainModule {}

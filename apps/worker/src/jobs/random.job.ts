@@ -4,13 +4,7 @@ export type RandomJobPayload = {
   randomNumber: number
 }
 
-export class RandomJob extends Job<RandomJobPayload> {
-  constructor(public readonly payload: RandomJobPayload) {
-    super({
-      name: RandomJob.name,
-    })
-  }
-}
+export class RandomJob extends Job<RandomJobPayload> {}
 
 @HandleJob(RandomJob)
 export class HandleRandomJob implements JobHandler<RandomJob> {

@@ -12,7 +12,7 @@ export class SchedulerService {
   constructor(@InjectWorkerUtils() readonly workerUtils: WorkerUtils) {}
 
   async schedule<JobClass extends Job>(job: JobClass): Promise<void> {
-    await this.workerUtils.addJob(job.config.name, job.payload, job.config.taskSpec)
+    await this.workerUtils.addJob(job.config.name, job.config.payload, job.config.taskSpec)
   }
 }
 
