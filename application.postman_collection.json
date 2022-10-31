@@ -1,0 +1,171 @@
+{
+	"info": {
+		"_postman_id": "bf3b98a7-b781-4789-b0c9-f2f957f3599e",
+		"name": "application",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "8488334"
+	},
+	"item": [
+		{
+			"name": "api",
+			"item": [
+				{
+					"name": "Health",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3333/health",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3333",
+							"path": [
+								"health"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Schedule random job",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"number\": {{$randomInt}}\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3333/jobs/random",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3333",
+							"path": [
+								"jobs",
+								"random"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Schedule notify job",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"message\": \"Hello world\",\n  \"jobKey\": \"4d2b0028-0cb5-4b1a-9c7e-c07e13547843\",\n  \"runAt\": \"2022-10-31T07:40:00.000Z\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3333/jobs/notify",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3333",
+							"path": [
+								"jobs",
+								"notify"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Schedule queued job",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// const queue = Math.random() > 0.5 ? \"one\" : \"two\"",
+									"const envBodyString = pm.collectionVariables.get('request_body')",
+									"",
+									"const envBodyJson = envBodyString ? JSON.parse(envBodyString) : {}",
+									"",
+									"const queue = envBodyJson.queue === \"one\" ? \"two\" : \"one\"",
+									"",
+									"const json = {",
+									"  \"message\": `Hello world, ${new Date().toISOString()}`,",
+									"  \"queue\": queue,",
+									"}",
+									"",
+									"const requestBody = JSON.stringify(json)",
+									"",
+									"pm.collectionVariables.set('request_body', requestBody);",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{{request_body}}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3333/jobs/queued",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3333",
+							"path": [
+								"jobs",
+								"queued"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "worker",
+			"item": [
+				{
+					"name": "Health",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3334/health",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3334",
+							"path": [
+								"health"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
