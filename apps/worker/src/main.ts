@@ -1,3 +1,8 @@
+import duration from 'dayjs/plugin/duration'
+import dayjs from 'dayjs'
+
+dayjs.extend(duration)
+
 import { Logger } from '@nestjs/common'
 import { NestFactory } from '@nestjs/core'
 import { MainModule } from './main.module'

@@ -1,3 +1,8 @@
+import duration from 'dayjs/plugin/duration'
+import dayjs from 'dayjs'
+
+dayjs.extend(duration)
+
 import { BootstrapConsole } from 'nestjs-console'
 import { CliModule } from './cli.module'
 
